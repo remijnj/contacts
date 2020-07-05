@@ -140,7 +140,7 @@ type contactsTable struct {
 	Headings []string 
 	Contacts []Contact
 	Box *widget.Box
-	//Filter string // nice to keep current filter and re-filter when doing an add/update
+	CurrentFilter string // nice to keep current filter and re-filter when doing an add/update
 	Click func(con Contact)
 }
 
@@ -151,16 +151,19 @@ func (c *contactsTable) update(contact Contact) {
 			break
 		}
 	}
-	c.updateContacts(c.Contacts)
+	newContacts := filterContacts(c.Contacts, c.CurrentFilter)
+	c.updateContacts(newContacts)
 }
 
 func (c *contactsTable) add(con Contact) {
 	c.Contacts = append(c.Contacts, con)
-	c.updateContacts(c.Contacts)
+	newContacts := filterContacts(c.Contacts, c.CurrentFilter)
+	c.updateContacts(newContacts)
 }
 
 func (c *contactsTable) filterContactsUI(search string) {
 	newContacts := filterContacts(c.Contacts, search)
+	c.CurrentFilter = search
 	c.updateContacts(newContacts)
 }
 
@@ -173,6 +176,7 @@ func (c *contactsTable) updateContacts(newContacts []Contact) {
 }
 
 func filterContacts(contacts []Contact, search string) (newContacts []Contact) {
+	fmt.Println("filterContacts(" + strconv.Itoa(len(contacts)) + ", " + search + ")")
 	// keep only contacts which match the search string in any field
 	for i:=0 ; i < len(contacts) ; i++ {
 		contactStrings := contacts[i].ToStrings()
@@ -187,6 +191,7 @@ func filterContacts(contacts []Contact, search string) (newContacts []Contact) {
 		}
 	}
 
+	fmt.Println("filterContacts return=" + strconv.Itoa(len(newContacts)) + " contacts")
 	return newContacts
 }
 
