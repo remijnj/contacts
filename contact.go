@@ -5,10 +5,10 @@ import (
 )
 
 type Contact struct {
-	Id int
+	Id        int
 	Firstname string
-	Lastname string
-	Comment string
+	Lastname  string
+	Comment   string
 }
 
 func (con *Contact) ToStrings() []string {
@@ -17,7 +17,7 @@ func (con *Contact) ToStrings() []string {
 
 func ContactsToStrings(contacts []Contact) [][]string {
 	var contactStrings [][]string
-	for i := range(contacts) {
+	for i := range contacts {
 		contactStrings = append(contactStrings, contacts[i].ToStrings())
 	}
 
