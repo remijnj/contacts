@@ -7,11 +7,15 @@ go build *.go
 
 
 TODO (order of priority)
-* Way to add contacts (UI + database add)
-* TECH: Move everything to records (i.s.o. 3 strings for first, last, comment)
-* Modify contact 
-  * by clicking on a field in the table 
-  * by pressing an edit button in the table (not ideal but easier to implement)
 * import from file
 * import direct from linkedin
 * Delete button on contact
+* Modify contact 
+  * by clicking on a field in the table 
+
+
+DONE
+* Way to add contacts (UI + database add)
+* TECH: Move everything to records (i.s.o. 3 strings for first, last, comment)
+* Modify contact 
+  * by pressing an edit button in the table (not ideal but easier to implement)
