@@ -10,6 +10,7 @@ import (
 	"strings"
 )
 
+// ContactsApp starts the application and lists the contacts in a table with.
 func ContactsApp(headings []string, contacts []Contact, save func(Contact)) {
 	app := app.New()
 	window := app.NewWindow("Contacts")
@@ -18,7 +19,7 @@ func ContactsApp(headings []string, contacts []Contact, save func(Contact)) {
 	var table contactsTable
 
 	var clickContact = func(con Contact) {
-		fmt.Println("clickContact(" + strconv.Itoa(con.Id) + ")")
+		fmt.Println("clickContact(" + strconv.Itoa(con.ID) + ")")
 		editWindow := newEditWindow(app, &con, func(contact Contact) {
 			// update it in the database
 			save(contact)
@@ -146,7 +147,7 @@ type contactsTable struct {
 
 func (c *contactsTable) update(contact Contact) {
 	for i, con := range c.Contacts {
-		if con.Id == contact.Id {
+		if con.ID == contact.ID {
 			c.Contacts[i] = contact
 			break
 		}
@@ -214,7 +215,7 @@ func makeTable(headings []string, contacts []Contact, click func(Contact)) *widg
 		row := i
 		editbox.Append(widget.NewButton("Edit", func() {
 			var contact Contact = contacts[row]
-			fmt.Println("Id=" + strconv.Itoa(contact.Id))
+			fmt.Println("Id=" + strconv.Itoa(contact.ID))
 			click(contact)
 		}))
 	}

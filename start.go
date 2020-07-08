@@ -43,7 +43,7 @@ func dbContactList(database *sql.DB) (headers []string, contacts []Contact, err 
 
 	headers = []string{"ID", "First name", "Last name", "Comment"}
 	for rows.Next() {
-		rows.Scan(&con.Id, &con.Firstname, &con.Lastname, &con.Comment)
+		rows.Scan(&con.ID, &con.Firstname, &con.Lastname, &con.Comment)
 		items = append(items, con)
 	}
 
@@ -51,12 +51,12 @@ func dbContactList(database *sql.DB) (headers []string, contacts []Contact, err 
 }
 
 func dbSaveContact(database *sql.DB, contact Contact) error {
-	fmt.Println("dbSaveContact id=" + strconv.Itoa(contact.Id))
-	if contact.Id > 0 {
+	fmt.Println("dbSaveContact id=" + strconv.Itoa(contact.ID))
+	if contact.ID > 0 {
 		return dbUpdateContact(database, contact)
-	} else {
-		return dbAddContact(database, contact)
 	}
+	
+	return dbAddContact(database, contact)
 }
 
 func dbUpdateContact(database *sql.DB, contact Contact) error {
@@ -66,7 +66,7 @@ func dbUpdateContact(database *sql.DB, contact Contact) error {
 	if err != nil {
 		log.Fatal(err)
 	}
-	_, err = statement.Exec(contact.Firstname, contact.Lastname, contact.Comment, contact.Id)
+	_, err = statement.Exec(contact.Firstname, contact.Lastname, contact.Comment, contact.ID)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -124,10 +124,10 @@ func dbInit() *sql.DB {
 func dbMigrate(database *sql.DB) {
 	// get the user_version and if needed run DB migration
 	row := database.QueryRow("PRAGMA user_version")
-	var user_version int
-	row.Scan(&user_version)
-	//fmt.Println("user_version=" + strconv.Itoa(user_version))
-	switch user_version {
+	var userVersion int
+	row.Scan(&userVersion)
+
+	switch userVersion {
 	case 0:
 		// add comment field
 		statement, err := database.Prepare("ALTER TABLE people ADD comment TEXT")
