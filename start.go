@@ -174,11 +174,3 @@ func dbDebugQuery(database *sql.DB) error {
 
 	return err
 }
-
-func dbAddTestContacts(database *sql.DB) {
-	dbAddContact(database, Contact{-1, "Joost", "Remijn", "me, myself and I"})
-	dbAddContact(database, Contact{-1, "Josette", "Sars", "married"})
-	dbAddContact(database, Contact{-1, "Vincent", "Remijn", "broer"})
-	dbAddContact(database, Contact{-1, "Lars", "Deuling", "neef"})
-	dbAddContact(database, Contact{-1, "Atelach", "Argaw", "manager at Spotify"})
-}
