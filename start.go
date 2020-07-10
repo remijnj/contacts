@@ -55,7 +55,7 @@ func dbSaveContact(database *sql.DB, contact Contact) error {
 	if contact.ID > 0 {
 		return dbUpdateContact(database, contact)
 	}
-	
+
 	return dbAddContact(database, contact)
 }
 
