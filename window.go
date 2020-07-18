@@ -11,7 +11,7 @@ import (
 )
 
 // ContactsApp starts the application and lists the contacts in a table with.
-func ContactsApp(headings []string, contacts []Contact, save func(Contact)) {
+func ContactsApp(headers []Header, contacts []Contact, save func(Contact)) {
 	app := app.New()
 	window := app.NewWindow("Contacts")
 	window.Resize(fyne.NewSize(400, 400))
@@ -31,10 +31,10 @@ func ContactsApp(headings []string, contacts []Contact, save func(Contact)) {
 		editWindow.Show()
 	}
 
-	contactsBox := makeTable(headings, contacts, clickContact)
+	contactsBox := makeTable(headers, contacts, clickContact)
 	contactsScroller := widget.NewVScrollContainer(contactsBox)
 
-	table.Headings = headings
+	table.Headers = headers
 	table.Contacts = contacts
 	table.Box = contactsBox
 	table.Click = clickContact
@@ -137,8 +137,13 @@ func newSearchEntry(table *contactsTable) *searchEntry {
 //
 // contactsTable
 //
+type Header struct {
+	text string
+	display bool
+}
+
 type contactsTable struct {
-	Headings      []string
+	Headers      []Header
 	Contacts      []Contact
 	Box           *widget.Box
 	CurrentFilter string // nice to keep current filter and re-filter when doing an add/update
@@ -169,7 +174,7 @@ func (c *contactsTable) filterContactsUI(search string) {
 }
 
 func (c *contactsTable) updateContacts(newContacts []Contact) {
-	newBox := makeTable(c.Headings, newContacts, c.Click)
+	newBox := makeTable(c.Headers, newContacts, c.Click)
 	for i := 0; i < len(c.Box.Children); i++ {
 		c.Box.Children[i] = newBox.Children[i]
 	}
@@ -196,13 +201,33 @@ func filterContacts(contacts []Contact, search string) (newContacts []Contact) {
 	return newContacts
 }
 
-func makeTable(headings []string, contacts []Contact, click func(Contact)) *widget.Box {
+func headersToText(headers []Header, displayOnly bool) []string {
+	var headerStrings []string
+	for _, header := range(headers) {
+		if (header.display || !displayOnly) {
+			headerStrings = append(headerStrings, header.text)
+		}
+	}
+
+	return headerStrings
+}
+
+func makeTable(headers []Header, contacts []Contact, click func(Contact)) *widget.Box {
 	rows := ContactsToStrings(contacts)
-	columns := rowsToColumns(headings, rows)
+	headerStrings := headersToText(headers, true)
+	columnsAll := rowsToColumns(headers, rows)
+
+	// remove the non-displaying columns
+	var columns [][]string
+	for idx, header := range headers {
+		if (header.display) {
+			columns = append(columns, columnsAll[idx])
+		}
+	}
 
 	objects := make([]fyne.CanvasObject, len(columns)+1)
 	for k, col := range columns {
-		box := widget.NewVBox(widget.NewLabelWithStyle(headings[k], fyne.TextAlignLeading, fyne.TextStyle{Bold: true}))
+		box := widget.NewVBox(widget.NewLabelWithStyle(headerStrings[k], fyne.TextAlignLeading, fyne.TextStyle{Bold: true}))
 		for _, val := range col {
 			box.Append(widget.NewLabel(val))
 		}
@@ -224,8 +249,8 @@ func makeTable(headings []string, contacts []Contact, click func(Contact)) *widg
 	return widget.NewHBox(objects...)
 }
 
-func rowsToColumns(headings []string, rows [][]string) [][]string {
-	columns := make([][]string, len(headings))
+func rowsToColumns(headers []Header, rows [][]string) [][]string {
+	columns := make([][]string, len(headers))
 	for _, row := range rows {
 		for colK := range row {
 			columns[colK] = append(columns[colK], row[colK])

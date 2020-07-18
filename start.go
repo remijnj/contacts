@@ -18,9 +18,9 @@ func main() {
 	//dbAddContact(db)
 	//dbAddTestContacts(db)
 	//dbDebugQuery(db)
-	headings, contacts, _ := dbContactList(db)
+	headers, contacts, _ := dbContactList(db)
 
-	ContactsApp(headings, contacts, func(con Contact) {
+	ContactsApp(headers, contacts, func(con Contact) {
 		dbSaveContact(db, con)
 	})
 }
@@ -29,19 +29,14 @@ func main() {
 //
 // DB stuff
 //
-func dbContactList(database *sql.DB) (headers []string, contacts []Contact, err error) {
+func dbContactList(database *sql.DB) (headers []Header, contacts []Contact, err error) {
 	rows, err := database.Query("SELECT id, firstname, lastname, comment FROM people")
 	if err != nil {
 		log.Fatal(err)
 	}
 	var con Contact
-	//var id int
-	//var firstname string
-	//var lastname string
-	//var comment string
 	var items []Contact
-
-	headers = []string{"ID", "First name", "Last name", "Comment"}
+	headers = []Header{{"ID", false}, {"First name", true}, {"Last name", true}, {"Comment", true}}
 	for rows.Next() {
 		rows.Scan(&con.ID, &con.Firstname, &con.Lastname, &con.Comment)
 		items = append(items, con)
