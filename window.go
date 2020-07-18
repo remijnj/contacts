@@ -83,6 +83,9 @@ func newEditWindow(app fyne.App, con *Contact, save func(Contact)) fyne.Window {
 
 	savebutton := widget.NewButton("Save", func() {
 		var contact Contact
+		if (con != nil) {
+			contact.ID = con.ID
+		}
 		contact.Firstname = firstname.Text
 		contact.Lastname = lastname.Text
 		contact.Comment = comment.Text
